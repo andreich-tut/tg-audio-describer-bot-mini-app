@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useSettings } from '@/hooks/useSettings';
-import { useOAuthSSE } from '@/hooks/useOAuthSSE';
 import { ModeDashboard, useModeSelection } from '@/features/ModeSelection';
 import { 
   SettingsDirectory, 
@@ -23,13 +22,11 @@ function AppContent() {
   const [activeTab, setActiveTab] = useState<Tab>('Mode');
   const { isLoading, error } = useSettings();
   const { selectedMode, setMode } = useModeSelection('chat');
-  
+
   // Telegram WebApp integration
   const tg = window.Telegram?.WebApp;
   const initData = tg?.initData || '';
-  
-  useOAuthSSE(initData);
-  
+
   // Debug info (remove after testing)
   const [showDebug, setShowDebug] = useState(true);
   if (showDebug && import.meta.env.PROD) {

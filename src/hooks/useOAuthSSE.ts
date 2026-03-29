@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
 const API_BASE = (import.meta.env.VITE_API_BASE as string | undefined) ?? ''
 
@@ -16,7 +16,6 @@ export interface OAuthState {
 export function useOAuthSSE(initData: string) {
   const [state, setState] = useState<OAuthState | null>(null)
   const [loading, setLoading] = useState(true)
-  const abortControllerRef = useRef<AbortController | null>(null)
 
   const fetchState = useCallback(async () => {
     try {
@@ -41,6 +40,8 @@ export function useOAuthSSE(initData: string) {
   }, [initData])
 
   useEffect(() => {
+    const abortController = new AbortController()
+
     // SSE with custom headers requires using fetch + ReadableStream
     // since EventSource doesn't support custom headers
     const connectSSE = async () => {
@@ -51,6 +52,7 @@ export function useOAuthSSE(initData: string) {
             'X-Telegram-Init-Data': initData,
             'Accept': 'text/event-stream',
           },
+          signal: abortController.signal,
         })
 
         if (!response.ok) {
@@ -121,7 +123,7 @@ export function useOAuthSSE(initData: string) {
     document.addEventListener('visibilitychange', onVisibility)
 
     return () => {
-      abortControllerRef.current?.abort()
+      abortController.abort()
       document.removeEventListener('visibilitychange', onVisibility)
     }
   }, [initData, fetchState])
