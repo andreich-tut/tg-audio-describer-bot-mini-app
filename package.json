@@ -12,7 +12,7 @@
     "check": "npm run lint && npm run typecheck",
     "check:fix": "npm run lint:fix && npm run typecheck",
     "preview": "vite preview",
-    "download:openapi": "curl -k -s https://localhost/openapi.json -o openapi.json",
+    "download:openapi": "curl -k -s ${VITE_SWAGGER_URL:-https://localhost/openapi.json} -o openapi.json",
     "generate:api": "npm run download:openapi && orval --config orval.config.ts",
     "generate:api:watch": "orval --config orval.config.ts --watch",
     "prepare": "husky"
