@@ -1,18 +1,21 @@
-import { useSelectLlmModelApiV1LlmModelPut } from '@/api/generated/llm/llm';
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTelegram } from '@/hooks/useTelegram';
+import { customFetch } from '@/api/mutator';
 
 export function useModelSelection() {
   const queryClient = useQueryClient();
   const tg = useTelegram();
 
-  const mutation = useSelectLlmModelApiV1LlmModelPut({
-    mutation: {
-      onSuccess: () => {
-        // Invalidate current model and settings
-        queryClient.invalidateQueries({ queryKey: ['/api/v1/llm/model'] });
-        queryClient.invalidateQueries({ queryKey: ['/api/v1/settings'] });
-      }
+  const mutation = useMutation({
+    mutationFn: async (modelId: string) => {
+      return customFetch('/api/v1/llm/model', {
+        method: 'PUT',
+        body: JSON.stringify({ model_id: modelId }),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/v1/llm/model'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/v1/settings'] });
     }
   });
 
@@ -20,7 +23,7 @@ export function useModelSelection() {
     // Haptic feedback
     tg?.haptic?.impactOccurred('light');
 
-    await mutation.mutateAsync({ data: { model_id: modelId } });
+    await mutation.mutateAsync(modelId);
   };
 
   return {
