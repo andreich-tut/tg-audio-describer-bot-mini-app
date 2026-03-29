@@ -19,7 +19,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:all": "npm run test && npm run test:e2e",
-    "download:openapi": "curl -k -s ${VITE_SWAGGER_URL:-https://localhost/openapi.json} -o openapi.json",
+    "download:openapi": "bash -c 'if [ -f .env ]; then set -a && source .env && set +a; fi && curl -k -s ${VITE_SWAGGER_URL:-https://localhost/openapi.json} -o openapi.json'",
     "generate:api": "npm run download:openapi && orval --config orval.config.ts",
     "generate:api:watch": "orval --config orval.config.ts --watch",
     "prepare": "husky"

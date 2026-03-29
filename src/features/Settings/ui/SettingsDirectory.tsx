@@ -1,7 +1,7 @@
 import { ChevronRight, Cpu, Cloud, Globe } from 'lucide-react';
 import { useTelegram } from '@/hooks/useTelegram';
 
-export type SettingsView = 'main' | 'llm' | 'vault' | 'obsidian' | 'lang' | 'kit';
+export type SettingsView = 'main' | 'llm' | 'vault' | 'obsidian' | 'lang' | 'kit' | 'model-selection';
 
 interface SettingsNavItem {
   id: SettingsView;

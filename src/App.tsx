@@ -2,14 +2,15 @@ import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useSettings } from '@/hooks/useSettings';
 import { ModeDashboard, useModeSelection } from '@/features/ModeSelection';
-import { 
-  SettingsDirectory, 
-  LLMConfig, 
-  VaultConfig, 
-  ObsidianConfig, 
-  LanguageConfig, 
+import {
+  SettingsDirectory,
+  LLMConfig,
+  VaultConfig,
+  ObsidianConfig,
+  LanguageConfig,
   DesignTokens,
-  type SettingsView 
+  ModelSelection,
+  type SettingsView
 } from '@/features/Settings';
 import { BottomNav, type Tab } from '@/shared/layout';
 import './theme.css';
@@ -108,7 +109,7 @@ function SettingsViews() {
   }
 
   if (currentView === 'llm') {
-    return <LLMConfig onBack={handleBack} />;
+    return <LLMConfig onBack={handleBack} onNavigate={handleNavigate} />;
   }
 
   if (currentView === 'vault') {
@@ -125,6 +126,10 @@ function SettingsViews() {
 
   if (currentView === 'kit') {
     return <DesignTokens onBack={handleBack} />;
+  }
+
+  if (currentView === 'model-selection') {
+    return <ModelSelection onBack={handleBack} />;
   }
 
   return null;
