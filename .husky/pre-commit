@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+# Run ESLint
+npm run lint
+
+# Run TypeScript type checking
+npx tsc --noEmit

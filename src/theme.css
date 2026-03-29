@@ -1,0 +1,35 @@
+/* --- Tailwind CSS --- */
+@import "tailwindcss";
+
+/* --- shadcn/ui Theme Variables --- */
+:root {
+  --bg: #020617;
+  --surface: #030712;
+  --border: #1e1b4b;
+  --primary: #8b5cf6;
+  --secondary: #22d3ee;
+  --text: #f8fafc;
+  --muted: #64748b;
+
+  /* shadcn/ui CSS variables */
+  --background: 222 47% 4%;
+  --foreground: 210 40% 98%;
+  --card: 222 47% 4%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222 47% 4%;
+  --popover-foreground: 210 40% 98%;
+  --primary-rgb: 139 92 246;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 217 91% 58%;
+  --secondary-foreground: 222 47% 4%;
+  --muted: 215 16% 47%;
+  --muted-foreground: 215 16% 47%;
+  --accent: 217 91% 58%;
+  --accent-foreground: 222 47% 4%;
+  --destructive: 0 62% 30%;
+  --destructive-foreground: 210 40% 98%;
+  --border-hsl: 229 60% 20%;
+  --input: 229 60% 20%;
+  --ring: 139 92 246;
+  --radius: 0.75rem;
+}
