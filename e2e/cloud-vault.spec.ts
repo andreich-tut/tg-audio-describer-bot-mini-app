@@ -142,15 +142,14 @@ test.describe('Cloud Vault', () => {
     })
 
     // Mock Yandex Disk folders API
+    // Backend returns array directly, not wrapped in { data: [...] }
     await context.route('**/api/v1/yadisk/folders**', (route) => {
       route.fulfill({
         status: 200,
-        json: {
-          data: [
-            { name: 'Notes', path: '/Notes', type: 'dir' },
-            { name: 'Documents', path: '/Documents', type: 'dir' },
-          ],
-        },
+        json: [
+          { name: 'Notes', path: '/Notes', type: 'dir' },
+          { name: 'Documents', path: '/Documents', type: 'dir' },
+        ],
       })
     })
 
@@ -179,15 +178,14 @@ test.describe('Cloud Vault', () => {
     })
 
     // Mock Yandex Disk folders API
+    // Backend returns array directly, not wrapped in { data: [...] }
     await context.route('**/api/v1/yadisk/folders**', (route) => {
       route.fulfill({
         status: 200,
-        json: {
-          data: [
-            { name: 'Notes', path: '/Notes', type: 'dir' },
-            { name: 'Documents', path: '/Documents', type: 'dir' },
-          ],
-        },
+        json: [
+          { name: 'Notes', path: '/Notes', type: 'dir' },
+          { name: 'Documents', path: '/Documents', type: 'dir' },
+        ],
       })
     })
 
@@ -214,14 +212,13 @@ test.describe('Cloud Vault', () => {
     })
 
     // Mock Yandex Disk folders API
+    // Backend returns array directly, not wrapped in { data: [...] }
     await context.route('**/api/v1/yadisk/folders**', (route) => {
       route.fulfill({
         status: 200,
-        json: {
-          data: [
-            { name: 'Notes', path: '/Notes', type: 'dir' },
-          ],
-        },
+        json: [
+          { name: 'Notes', path: '/Notes', type: 'dir' },
+        ],
       })
     })
 
@@ -250,30 +247,28 @@ test.describe('Cloud Vault', () => {
     })
 
     // Mock Yandex Disk folders API
+    // Backend returns array directly, not wrapped in { data: [...] }
     await context.route('**/api/v1/yadisk/folders**', (route) => {
       route.fulfill({
         status: 200,
-        json: {
-          data: [
-            { name: 'Notes', path: '/Notes', type: 'dir' },
-          ],
-        },
+        json: [
+          { name: 'Notes', path: '/Notes', type: 'dir' },
+        ],
       })
     })
 
     // Mock vault tree API
+    // Backend returns object directly, not wrapped in { data: {...} }
     await context.route('**/api/v1/yadisk/folders/tree**', (route) => {
       route.fulfill({
         status: 200,
         json: {
-          data: {
-            name: 'Notes',
-            path: '/Notes',
-            children: [
-              { name: 'Inbox', path: '/Notes/Inbox' },
-              { name: 'Archive', path: '/Notes/Archive' },
-            ],
-          },
+          name: 'Notes',
+          path: '/Notes',
+          children: [
+            { name: 'Inbox', path: '/Notes/Inbox' },
+            { name: 'Archive', path: '/Notes/Archive' },
+          ],
         },
       })
     })
@@ -302,15 +297,14 @@ test.describe('Cloud Vault', () => {
     })
 
     // Mock Yandex Disk folders API with delay
+    // Backend returns array directly, not wrapped in { data: [...] }
     await context.route('**/api/v1/yadisk/folders**', async (route) => {
       await new Promise(resolve => setTimeout(resolve, 500))
       route.fulfill({
         status: 200,
-        json: {
-          data: [
-            { name: 'Notes', path: '/Notes', type: 'dir' },
-          ],
-        },
+        json: [
+          { name: 'Notes', path: '/Notes', type: 'dir' },
+        ],
       })
     })
 
@@ -337,12 +331,11 @@ test.describe('Cloud Vault', () => {
     })
 
     // Mock Yandex Disk folders API with empty response
+    // Backend returns array directly, not wrapped in { data: [...] }
     await context.route('**/api/v1/yadisk/folders**', (route) => {
       route.fulfill({
         status: 200,
-        json: {
-          data: [],
-        },
+        json: [],
       })
     })
 

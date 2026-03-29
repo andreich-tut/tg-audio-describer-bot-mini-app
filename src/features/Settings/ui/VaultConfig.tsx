@@ -57,8 +57,8 @@ export function VaultConfig({ onBack, onRefresh }: VaultConfigProps) {
   const [folderChildren, setFolderChildren] = useState<Map<string, YandexDiskFolder[]>>(new Map());
 
   // Fetch root folder contents
-  const { 
-    data: rootFolders, 
+  const {
+    data: rootFolders,
     isLoading: isLoadingRoot
   } = useListYadiskFoldersApiV1YadiskFoldersGet(
     yandexConnected ? { path: '/', limit: 100 } : undefined,
@@ -66,12 +66,17 @@ export function VaultConfig({ onBack, onRefresh }: VaultConfigProps) {
   );
 
   // Fetch tree for selected vault path (shallow depth for performance)
-  const { 
-    data: vaultTree 
+  const {
+    data: vaultTree
   } = useGetYadiskFolderTreeApiV1YadiskFoldersTreeGet(
     currentVaultPath ? { root_path: currentVaultPath, depth: 1 } : undefined,
     { query: { enabled: yandexConnected && !!currentVaultPath } }
   );
+
+  // Debug logging for development
+  if (import.meta.env.DEV && rootFolders) {
+    console.log('[VaultConfig] rootFolders:', rootFolders);
+  }
 
   // Handle folder selection (set as vault path)
   const handleSelectFolder = useCallback(async (path: string) => {
@@ -91,9 +96,10 @@ export function VaultConfig({ onBack, onRefresh }: VaultConfigProps) {
     if (folderChildren.has(path)) return;
 
     setLoadingChildren(prev => new Set(prev).add(path));
-    
+
     try {
       const response = await settingsApi.listYadiskFolders({ path, limit: 100 });
+      // Response is wrapped: { data: YandexDiskFolder[] }
       const folders = response.data.filter(item => item.type === 'dir');
       setFolderChildren(prev => new Map(prev).set(path, folders));
     } catch (error) {
@@ -114,9 +120,12 @@ export function VaultConfig({ onBack, onRefresh }: VaultConfigProps) {
 
   // Build tree items from root folders
   const buildTreeItems = useCallback((): FolderItem[] => {
-    if (!rootFolders?.data || !Array.isArray(rootFolders.data)) return [];
+    // IMPORTANT: Orval type says rootFolders is { data: [...], status: 200 }
+    // BUT at runtime, customFetch returns the raw API response (array)
+    // So rootFolders is actually YandexDiskFolder[] directly
+    if (!rootFolders || !Array.isArray(rootFolders)) return [];
 
-    return (rootFolders.data as YandexDiskFolder[])
+    return rootFolders
       .filter((item: YandexDiskFolder) => item.type === 'dir')
       .map((folder: YandexDiskFolder) => {
         const children = folderChildren.get(folder.path);
@@ -217,8 +226,8 @@ export function VaultConfig({ onBack, onRefresh }: VaultConfigProps) {
                       <span className="text-xs">Loading folders...</span>
                     </div>
                   </div>
-                ) : rootFolders?.data && Array.isArray(rootFolders.data) && rootFolders.data.length > 0 ? (
-                  <FolderTree 
+                ) : rootFolders && Array.isArray(rootFolders) && rootFolders.length > 0 ? (
+                  <FolderTree
                     items={buildTreeItems()}
                     onFolderClick={handleSelectFolder}
                     onFolderExpand={handleExpandFolder}
@@ -231,13 +240,13 @@ export function VaultConfig({ onBack, onRefresh }: VaultConfigProps) {
                 )}
               </div>
 
-              {currentVaultPath && vaultTree?.data && 'children' in vaultTree.data && (
+              {currentVaultPath && vaultTree && typeof vaultTree === 'object' && 'children' in vaultTree && Array.isArray((vaultTree as Record<string, unknown>).children) && (
                 <div className="p-4 rounded-2xl bg-[#8b5cf6]/10 border border-[#8b5cf6]/30">
                   <div className="text-xs text-[#a78bfa]">
                     <span className="font-black">Current vault:</span> {currentVaultPath}
-                    {vaultTree.data.children && vaultTree.data.children.length > 0 && (
+                    {((vaultTree as Record<string, unknown>).children as unknown[]).length > 0 && (
                       <span className="text-[#64748b] ml-2">
-                        ({vaultTree.data.children.length} subfolders)
+                        ({((vaultTree as Record<string, unknown>).children as unknown[]).length} subfolders)
                       </span>
                     )}
                   </div>

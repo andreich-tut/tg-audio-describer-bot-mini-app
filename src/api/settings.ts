@@ -33,10 +33,12 @@ export const settingsApi = {
     if (params?.path) searchParams.set('path', params.path);
     if (params?.limit) searchParams.set('limit', String(params.limit));
     if (params?.offset) searchParams.set('offset', String(params.offset));
-    
+
     const queryString = searchParams.toString();
     const url = `/api/v1/yadisk/folders${queryString ? `?${queryString}` : ''}`;
-    
-    return api<{ data: YandexDiskFolder[] }>(url);
+
+    // Backend returns array directly: YandexDiskFolder[]
+    // We wrap it in { data: [...] } for consistency with Orval-generated types
+    return api<YandexDiskFolder[]>(url).then(data => ({ data }));
   },
 }
