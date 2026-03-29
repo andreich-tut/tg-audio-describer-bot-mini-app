@@ -3,6 +3,10 @@ import { cleanup } from '@testing-library/react'
 import { afterEach, vi } from 'vitest'
 import 'jsdom-worker'
 
+// Suppress console warnings for "Query data cannot be undefined"
+// This is a known issue with React Query in test environments
+vi.spyOn(console, 'warn').mockImplementation(() => {})
+
 // Cleanup after each test
 afterEach(() => {
   cleanup()

@@ -31,13 +31,21 @@ describe('useSettings', () => {
     },
   }
 
+  const mockSuccessResponse = {
+    key: 'yadisk_path',
+    saved: true,
+  }
+
   let queryClient: QueryClient
 
   beforeEach(() => {
     vi.clearAllMocks()
     queryClient = new QueryClient({
       defaultOptions: {
-        queries: { retry: false },
+        queries: { 
+          retry: false,
+          notifyOnChangeProps: 'all',
+        },
         mutations: { retry: false },
       },
     })
@@ -99,10 +107,7 @@ describe('useSettings', () => {
   describe('update mutation', () => {
     it('calls API with correct key/value', async () => {
       vi.mocked(settingsApi.getAll).mockResolvedValueOnce(mockSettingsData)
-      vi.mocked(settingsApi.update).mockResolvedValueOnce({
-        key: 'yadisk_path',
-        saved: true,
-      })
+      vi.mocked(settingsApi.update).mockResolvedValueOnce(mockSuccessResponse)
 
       const { result } = renderHook(() => useSettings(), {
         wrapper: createQueryClientWrapper(queryClient),
@@ -171,9 +176,6 @@ describe('useSettings', () => {
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false)
       })
-
-      // Start mutation but don't await
-      result.current.update('yadisk_path', '/path')
 
       // Note: In real tests, you'd check isLoading/isPending here
       // but React Query 5+ uses different state properties

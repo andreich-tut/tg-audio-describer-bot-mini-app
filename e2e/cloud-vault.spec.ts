@@ -4,7 +4,7 @@ import { initTelegramMock } from '../tests/mocks/telegram'
 test.describe('Cloud Vault', () => {
   test.beforeEach(async ({ page, context }) => {
     await initTelegramMock(page)
-    
+
     // Mock API to return disconnected state by default
     await context.route('**/api/v1/settings', (route) => {
       route.fulfill({
@@ -25,7 +25,7 @@ test.describe('Cloud Vault', () => {
 
   test('loads the app', async ({ page }) => {
     await page.goto('/')
-    
+
     // Wait for app to load
     await expect(page.getByText('Mode')).toBeVisible({ timeout: 10000 })
   })
@@ -57,7 +57,7 @@ test.describe('Cloud Vault', () => {
   test('displays Yandex Disk branding', async ({ page }) => {
     await page.goto('/')
     await expect(page.getByText('Mode')).toBeVisible({ timeout: 10000 })
-    
+
     await page.getByText('Settings').click()
     await page.getByText('Cloud Vault').click()
 
@@ -98,7 +98,7 @@ test.describe('Cloud Vault', () => {
 
     await page.goto('/')
     await expect(page.getByText('Mode')).toBeVisible({ timeout: 10000 })
-    
+
     await page.getByText('Settings').click()
     await page.getByText('Cloud Vault').click()
 
@@ -121,7 +121,7 @@ test.describe('Cloud Vault', () => {
 
     await page.goto('/')
     await expect(page.getByText('Mode')).toBeVisible({ timeout: 10000 })
-    
+
     await page.getByText('Settings').click()
     await page.getByText('Cloud Vault').click()
 
@@ -141,9 +141,22 @@ test.describe('Cloud Vault', () => {
       })
     })
 
+    // Mock Yandex Disk folders API
+    await context.route('**/api/v1/yadisk/folders**', (route) => {
+      route.fulfill({
+        status: 200,
+        json: {
+          data: [
+            { name: 'Notes', path: '/Notes', type: 'dir' },
+            { name: 'Documents', path: '/Documents', type: 'dir' },
+          ],
+        },
+      })
+    })
+
     await page.goto('/')
     await expect(page.getByText('Mode')).toBeVisible({ timeout: 10000 })
-    
+
     await page.getByText('Settings').click()
     await page.getByText('Cloud Vault').click()
 
@@ -153,14 +166,27 @@ test.describe('Cloud Vault', () => {
     await expect(page.getByRole('button', { name: 'Revoke Access' })).toBeVisible()
   })
 
-  test('vault path input is disabled when not connected', async ({ page, context }) => {
-    // Mock API to return disconnected state
+  test('shows Vault Explorer when connected', async ({ page, context }) => {
+    // Mock API to return connected state
     await context.route('**/api/v1/settings', (route) => {
       route.fulfill({
         status: 200,
         json: {
-          settings: {},
-          oauth: { yandex: { connected: false, login: null } },
+          settings: { yadisk_path: '/vault/notes' },
+          oauth: { yandex: { connected: true, login: 'test@yandex.ru' } },
+        },
+      })
+    })
+
+    // Mock Yandex Disk folders API
+    await context.route('**/api/v1/yadisk/folders**', (route) => {
+      route.fulfill({
+        status: 200,
+        json: {
+          data: [
+            { name: 'Notes', path: '/Notes', type: 'dir' },
+            { name: 'Documents', path: '/Documents', type: 'dir' },
+          ],
         },
       })
     })
@@ -171,31 +197,162 @@ test.describe('Cloud Vault', () => {
     await page.getByText('Settings').click()
     await page.getByText('Cloud Vault').click()
 
-    // Find input by placeholder text
-    const input = page.getByPlaceholder('e.g., /vault/notes')
-    await expect(input).toBeDisabled()
+    // Should show Vault Explorer
+    await expect(page.getByText('Vault Explorer')).toBeVisible()
   })
 
-  test('shows helper message when disconnected', async ({ page, context }) => {
-    // Mock API to return disconnected state
+  test('vault path input shows current vault path', async ({ page, context }) => {
+    // Mock API to return connected state with vault path
     await context.route('**/api/v1/settings', (route) => {
       route.fulfill({
         status: 200,
         json: {
-          settings: {},
-          oauth: { yandex: { connected: false, login: null } },
+          settings: { yadisk_path: '/Notes/Obsidian' },
+          oauth: { yandex: { connected: true, login: 'test@yandex.ru' } },
+        },
+      })
+    })
+
+    // Mock Yandex Disk folders API
+    await context.route('**/api/v1/yadisk/folders**', (route) => {
+      route.fulfill({
+        status: 200,
+        json: {
+          data: [
+            { name: 'Notes', path: '/Notes', type: 'dir' },
+          ],
         },
       })
     })
 
     await page.goto('/')
     await expect(page.getByText('Mode')).toBeVisible({ timeout: 10000 })
-    
+
     await page.getByText('Settings').click()
     await page.getByText('Cloud Vault').click()
 
-    await expect(
-      page.getByText(/connect yandex disk to configure your vault path/i)
-    ).toBeVisible()
+    // Check input shows current vault path (by placeholder and value)
+    const input = page.getByPlaceholder('Select from vault explorer below')
+    await expect(input).toBeVisible()
+    await expect(input).toHaveValue('/Notes/Obsidian')
+  })
+
+  test('shows current vault info when path is set', async ({ page, context }) => {
+    // Mock API to return connected state with vault path
+    await context.route('**/api/v1/settings', (route) => {
+      route.fulfill({
+        status: 200,
+        json: {
+          settings: { yadisk_path: '/Notes' },
+          oauth: { yandex: { connected: true, login: 'test@yandex.ru' } },
+        },
+      })
+    })
+
+    // Mock Yandex Disk folders API
+    await context.route('**/api/v1/yadisk/folders**', (route) => {
+      route.fulfill({
+        status: 200,
+        json: {
+          data: [
+            { name: 'Notes', path: '/Notes', type: 'dir' },
+          ],
+        },
+      })
+    })
+
+    // Mock vault tree API
+    await context.route('**/api/v1/yadisk/folders/tree**', (route) => {
+      route.fulfill({
+        status: 200,
+        json: {
+          data: {
+            name: 'Notes',
+            path: '/Notes',
+            children: [
+              { name: 'Inbox', path: '/Notes/Inbox' },
+              { name: 'Archive', path: '/Notes/Archive' },
+            ],
+          },
+        },
+      })
+    })
+
+    await page.goto('/')
+    await expect(page.getByText('Mode')).toBeVisible({ timeout: 10000 })
+
+    await page.getByText('Settings').click()
+    await page.getByText('Cloud Vault').click()
+
+    // Should show current vault info
+    await expect(page.getByText(/Current vault:/)).toBeVisible()
+    await expect(page.getByText('/Notes')).toBeVisible()
+  })
+
+  test('shows loading state for folders', async ({ page, context }) => {
+    // Mock API to return connected state
+    await context.route('**/api/v1/settings', (route) => {
+      route.fulfill({
+        status: 200,
+        json: {
+          settings: { yadisk_path: '/vault/notes' },
+          oauth: { yandex: { connected: true, login: 'test@yandex.ru' } },
+        },
+      })
+    })
+
+    // Mock Yandex Disk folders API with delay
+    await context.route('**/api/v1/yadisk/folders**', async (route) => {
+      await new Promise(resolve => setTimeout(resolve, 500))
+      route.fulfill({
+        status: 200,
+        json: {
+          data: [
+            { name: 'Notes', path: '/Notes', type: 'dir' },
+          ],
+        },
+      })
+    })
+
+    await page.goto('/')
+    await expect(page.getByText('Mode')).toBeVisible({ timeout: 10000 })
+
+    await page.getByText('Settings').click()
+    await page.getByText('Cloud Vault').click()
+
+    // Should show loading state initially
+    await expect(page.getByText('Loading folders...')).toBeVisible()
+  })
+
+  test('shows empty state when no folders', async ({ page, context }) => {
+    // Mock API to return connected state
+    await context.route('**/api/v1/settings', (route) => {
+      route.fulfill({
+        status: 200,
+        json: {
+          settings: { yadisk_path: '/vault/notes' },
+          oauth: { yandex: { connected: true, login: 'test@yandex.ru' } },
+        },
+      })
+    })
+
+    // Mock Yandex Disk folders API with empty response
+    await context.route('**/api/v1/yadisk/folders**', (route) => {
+      route.fulfill({
+        status: 200,
+        json: {
+          data: [],
+        },
+      })
+    })
+
+    await page.goto('/')
+    await expect(page.getByText('Mode')).toBeVisible({ timeout: 10000 })
+
+    await page.getByText('Settings').click()
+    await page.getByText('Cloud Vault').click()
+
+    // Should show empty state
+    await expect(page.getByText('No folders found at root level')).toBeVisible()
   })
 })

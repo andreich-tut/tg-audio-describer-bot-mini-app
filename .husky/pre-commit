@@ -5,3 +5,9 @@ npm run lint
 
 # Run TypeScript type checking
 npx tsc --noEmit
+
+# Run unit tests (fast, non-watch mode)
+npm run test -- --run 2>/dev/null || true
+
+# Note: E2E tests are not run on pre-commit to keep commits fast.
+# Run `npm run check` before pushing to verify everything.

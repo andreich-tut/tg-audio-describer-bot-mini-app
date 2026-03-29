@@ -74,9 +74,24 @@ npm run build        # TypeScript compile + Vite build
 npm run preview      # Preview production build
 ```
 
+### Testing
+```bash
+npm run test         # Run unit tests (Vitest, watch mode)
+npm run test:run     # Run unit tests once (no watch)
+npm run test:e2e     # Run e2e tests (Playwright)
+npm run test:all     # Run all tests (unit + e2e)
+```
+
+### Full Check (Before Pushing)
+```bash
+npm run check        # Lint + typecheck + all tests (full CI check)
+```
+
 ### Code Quality
 ```bash
 npm run lint         # ESLint check
+npm run typecheck    # TypeScript type check
+npm run check:fix    # Auto-fix lint + typecheck
 ```
 
 ### API Client Generation
@@ -261,6 +276,15 @@ During task implementation, always communicate which specialized agent (if any) 
 - **TypeScript strict mode** - All code must be properly typed
 - **ESLint flat config** - Rules in `eslint.config.js`
 - **Path alias** - Use `@/` for `./src/` imports
+
+### Git Hooks (Husky)
+
+Pre-commit hooks run automatically on `git commit`:
+- ESLint check
+- TypeScript type checking
+- Unit tests (non-blocking, for fast feedback)
+
+**Important:** E2E tests are NOT run on pre-commit to keep commits fast. Run `npm run check` before pushing to verify everything.
 
 ## Related Documentation
 

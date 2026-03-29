@@ -1,5 +1,6 @@
 import { api } from './client'
 import type { SettingKey, SettingsResponse, SectionId } from '../types'
+import type { YandexDiskFolder } from './generated/models/yandexDiskFolder'
 
 export const settingsApi = {
   getAll: () => api<SettingsResponse>('/api/v1/settings'),
@@ -26,4 +27,16 @@ export const settingsApi = {
     api<{ disconnected: boolean }>('/api/v1/oauth/yandex', {
       method: 'DELETE',
     }),
+
+  listYadiskFolders: (params?: { path?: string; limit?: number; offset?: number }) => {
+    const searchParams = new URLSearchParams();
+    if (params?.path) searchParams.set('path', params.path);
+    if (params?.limit) searchParams.set('limit', String(params.limit));
+    if (params?.offset) searchParams.set('offset', String(params.offset));
+    
+    const queryString = searchParams.toString();
+    const url = `/api/v1/yadisk/folders${queryString ? `?${queryString}` : ''}`;
+    
+    return api<{ data: YandexDiskFolder[] }>(url);
+  },
 }
