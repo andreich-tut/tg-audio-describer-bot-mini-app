@@ -129,9 +129,12 @@ export function VaultConfig({ onBack, onRefresh }: VaultConfigProps) {
       .filter((item: YandexDiskFolder) => item.type === 'dir')
       .map((folder: YandexDiskFolder) => {
         const children = folderChildren.get(folder.path);
+        // Always set children as empty array if we've loaded this folder's children
+        // This tells FolderTree that it's expandable
         return {
-          ...convertToFolderItem(folder, currentVaultPath, children !== undefined),
-          children: children?.map(child => convertToFolderItem(child, currentVaultPath)),
+          ...convertToFolderItem(folder, currentVaultPath),
+          // If children are loaded, use them; otherwise set to empty array to indicate expandable
+          children: children !== undefined ? children.map(child => convertToFolderItem(child, currentVaultPath)) : [],
         };
       });
   }, [rootFolders, folderChildren, currentVaultPath]);
