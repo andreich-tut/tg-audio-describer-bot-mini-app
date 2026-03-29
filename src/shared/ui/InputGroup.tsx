@@ -8,16 +8,20 @@ export interface InputGroupProps {
   isGeist?: boolean;
   showEye?: boolean;
   onToggleEye?: () => void;
+  placeholder?: string;
+  disabled?: boolean;
 }
 
-export function InputGroup({ 
-  label, 
-  value, 
-  type = 'text', 
-  onChange, 
-  isGeist = false, 
-  showEye, 
-  onToggleEye 
+export function InputGroup({
+  label,
+  value,
+  type = 'text',
+  onChange,
+  isGeist = false,
+  showEye,
+  onToggleEye,
+  placeholder,
+  disabled
 }: InputGroupProps) {
   return (
     <div className="flex flex-col gap-2 w-full">
@@ -29,7 +33,9 @@ export function InputGroup({
           type={showEye ? (type === 'password' ? 'text' : 'password') : type}
           value={value}
           onChange={onChange}
-          className={`w-full bg-[#020617] border border-[#1e1b4b] rounded-xl px-4 py-3 text-sm text-[#f8fafc] focus:outline-none focus:ring-2 focus:ring-[#8b5cf6]/40 focus:border-[#8b5cf6] transition-all placeholder-[#334155] ${isGeist ? 'font-mono' : 'font-sans'}`}
+          placeholder={placeholder}
+          disabled={disabled}
+          className={`w-full bg-[#020617] border border-[#1e1b4b] rounded-xl px-4 py-3 text-sm text-[#f8fafc] focus:outline-none focus:ring-2 focus:ring-[#8b5cf6]/40 focus:border-[#8b5cf6] transition-all placeholder-[#334155] ${isGeist ? 'font-mono' : 'font-sans'} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         />
         {showEye && onToggleEye && (
           <button

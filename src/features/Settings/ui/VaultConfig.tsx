@@ -14,20 +14,56 @@ export function VaultConfig({ onBack, onRefresh }: VaultConfigProps) {
   const { haptic } = useTelegram();
   const tg = window.Telegram?.WebApp;
   const initData = tg?.initData || '';
-  const { state: sseState } = useOAuthSSE(initData);
+  const { state: sseState, refetch: refetchOAuth } = useOAuthSSE(initData);
 
   const settings = data?.settings || {};
   const oauth = data?.oauth || {};
-  const yandex = oauth['yandex'] ?? { connected: false, login: null };
+  
+  // Merge SSE state with initial OAuth data (SSE takes precedence)
+  const yandexConnected = sseState?.connected ?? oauth['yandex']?.connected ?? false;
+  const yandexLogin = sseState?.login ?? oauth['yandex']?.login ?? null;
 
-  const handleRevoke = () => {
+  const handleRevoke = async () => {
     haptic?.impactOccurred('medium');
-    settingsApi.disconnectYandex().then(() => onRefresh?.());
+    try {
+      await settingsApi.disconnectYandex();
+      await refetchOAuth();
+      onRefresh?.();
+    } catch (error) {
+      console.error('Failed to disconnect Yandex:', error);
+      haptic?.notificationOccurred('error');
+    }
+  };
+
+  const handleConnect = async () => {
+    haptic?.impactOccurred('medium');
+    try {
+      const response = await settingsApi.getYandexOAuthUrl();
+      if (response.url) {
+        // Open OAuth URL in Telegram's built-in browser
+        tg?.openLink(response.url);
+      }
+    } catch (error) {
+      console.error('Failed to get Yandex OAuth URL:', error);
+      haptic?.notificationOccurred('error');
+    }
+  };
+
+  const handleSaveVaultPath = async (value: string) => {
+    haptic?.impactOccurred('light');
+    try {
+      await update('yadisk_path', value);
+      haptic?.notificationOccurred('success');
+    } catch (error) {
+      console.error('Failed to save vault path:', error);
+      haptic?.notificationOccurred('error');
+    }
   };
 
   return (
     <ScreenWrapper title="Cloud Vault" onBack={onBack}>
       <div className="space-y-6 pt-2">
+        {/* OAuth Connection Card */}
         <div className="p-6 rounded-3xl border border-[#1e1b4b] bg-[#030712] space-y-5 shadow-xl">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -37,41 +73,68 @@ export function VaultConfig({ onBack, onRefresh }: VaultConfigProps) {
               <div>
                 <div className="text-sm font-black text-white">Yandex Disk</div>
                 <div className="text-[11px] font-bold text-[#64748b]">
-                  {sseState?.login || yandex.login || '@username'}
+                  {yandexLogin || 'Not connected'}
                 </div>
               </div>
             </div>
-            <Badge color="green">Active</Badge>
+            <Badge color={yandexConnected ? 'green' : 'zinc'}>
+              {yandexConnected ? 'Active' : 'Inactive'}
+            </Badge>
           </div>
-          <Button
-            variant="destructive"
-            className="w-full text-xs py-2 rounded-xl"
-            onClick={handleRevoke}
-          >
-            Revoke Access
-          </Button>
+          
+          {yandexConnected ? (
+            <Button
+              variant="destructive"
+              className="w-full text-xs py-2 rounded-xl"
+              onClick={handleRevoke}
+            >
+              Revoke Access
+            </Button>
+          ) : (
+            <Button
+              variant="primary"
+              className="w-full text-xs py-2 rounded-xl"
+              onClick={handleConnect}
+            >
+              Connect Yandex Disk
+            </Button>
+          )}
         </div>
 
+        {/* Vault Path Configuration */}
         <div className="space-y-4">
           <InputGroup
-            label="Vault Target"
+            label="Vault Target Path"
+            placeholder="e.g., /vault/notes"
             value={settings.yadisk_path || ''}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => update('yadisk_path', e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSaveVaultPath(e.target.value)}
             isGeist
+            disabled={!yandexConnected}
           />
-          <div className="p-5 border border-[#1e1b4b] rounded-3xl bg-[#030712] shadow-inner">
-            <div className="text-[10px] uppercase font-black text-[#475569] tracking-widest mb-4">
-              Vault Explorer
+          
+          {yandexConnected && (
+            <div className="p-5 border border-[#1e1b4b] rounded-3xl bg-[#030712] shadow-inner">
+              <div className="text-[10px] uppercase font-black text-[#475569] tracking-widest mb-4">
+                Vault Explorer
+              </div>
+              <FolderTree items={[{
+                id: 'root',
+                name: 'Personal Vault',
+                children: [
+                  { id: 'notes', name: 'Research', selected: true },
+                  { id: 'daily', name: 'Journal' }
+                ]
+              }]} />
             </div>
-            <FolderTree items={[{
-              id: 'root',
-              name: 'Personal Vault',
-              children: [
-                { id: 'notes', name: 'Research', selected: true },
-                { id: 'daily', name: 'Journal' }
-              ]
-            }]} />
-          </div>
+          )}
+          
+          {!yandexConnected && (
+            <div className="p-4 rounded-2xl bg-[#1e1b4b]/30 border border-[#1e1b4b]">
+              <div className="text-sm text-[#94a3b8]">
+                Connect Yandex Disk to configure your vault path and browse folders.
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </ScreenWrapper>

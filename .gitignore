@@ -31,3 +31,15 @@ openapi.json
 *.sln
 *.sw?
 *.har
+
+# Test outputs
+coverage/
+test-results/
+playwright-report/
+test-screenshots/
+
+# Git hooks
+.husky/
+
+# Planning docs (local dev artifacts)
+planning/
