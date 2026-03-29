@@ -25,7 +25,10 @@ import type {
   HTTPValidationError
 } from '../models';
 
+import { customFetch } from '../../mutator';
 
+
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 
@@ -61,20 +64,14 @@ export const getGetUsageApiV1UsageGetUrl = () => {
 
 export const getUsageApiV1UsageGet = async ( options?: RequestInit): Promise<getUsageApiV1UsageGetResponse> => {
 
-  const res = await fetch(getGetUsageApiV1UsageGetUrl(),
+  return customFetch<getUsageApiV1UsageGetResponse>(getGetUsageApiV1UsageGetUrl(),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getUsageApiV1UsageGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getUsageApiV1UsageGetResponse
-}
+);}
 
 
 
@@ -87,16 +84,16 @@ export const getGetUsageApiV1UsageGetQueryKey = () => {
     }
 
 
-export const getGetUsageApiV1UsageGetQueryOptions = <TData = Awaited<ReturnType<typeof getUsageApiV1UsageGet>>, TError = HTTPValidationError>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsageApiV1UsageGet>>, TError, TData>>, fetch?: RequestInit}
+export const getGetUsageApiV1UsageGetQueryOptions = <TData = Awaited<ReturnType<typeof getUsageApiV1UsageGet>>, TError = HTTPValidationError>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsageApiV1UsageGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetUsageApiV1UsageGetQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUsageApiV1UsageGet>>> = ({ signal }) => getUsageApiV1UsageGet({ signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUsageApiV1UsageGet>>> = ({ signal }) => getUsageApiV1UsageGet({ signal, ...requestOptions });
 
 
 
@@ -116,7 +113,7 @@ export function useGetUsageApiV1UsageGet<TData = Awaited<ReturnType<typeof getUs
           TError,
           Awaited<ReturnType<typeof getUsageApiV1UsageGet>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetUsageApiV1UsageGet<TData = Awaited<ReturnType<typeof getUsageApiV1UsageGet>>, TError = HTTPValidationError>(
@@ -126,11 +123,11 @@ export function useGetUsageApiV1UsageGet<TData = Awaited<ReturnType<typeof getUs
           TError,
           Awaited<ReturnType<typeof getUsageApiV1UsageGet>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetUsageApiV1UsageGet<TData = Awaited<ReturnType<typeof getUsageApiV1UsageGet>>, TError = HTTPValidationError>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsageApiV1UsageGet>>, TError, TData>>, fetch?: RequestInit}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsageApiV1UsageGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -138,7 +135,7 @@ export function useGetUsageApiV1UsageGet<TData = Awaited<ReturnType<typeof getUs
  */
 
 export function useGetUsageApiV1UsageGet<TData = Awaited<ReturnType<typeof getUsageApiV1UsageGet>>, TError = HTTPValidationError>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsageApiV1UsageGet>>, TError, TData>>, fetch?: RequestInit}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsageApiV1UsageGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 

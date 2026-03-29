@@ -35,7 +35,10 @@ import type {
   UpdateSettingApiV1SettingsKeyPut200
 } from '../models';
 
+import { customFetch } from '../../mutator';
 
+
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 
@@ -71,20 +74,14 @@ export const getGetSettingsApiV1SettingsGetUrl = () => {
 
 export const getSettingsApiV1SettingsGet = async ( options?: RequestInit): Promise<getSettingsApiV1SettingsGetResponse> => {
 
-  const res = await fetch(getGetSettingsApiV1SettingsGetUrl(),
+  return customFetch<getSettingsApiV1SettingsGetResponse>(getGetSettingsApiV1SettingsGetUrl(),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getSettingsApiV1SettingsGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getSettingsApiV1SettingsGetResponse
-}
+);}
 
 
 
@@ -97,16 +94,16 @@ export const getGetSettingsApiV1SettingsGetQueryKey = () => {
     }
 
 
-export const getGetSettingsApiV1SettingsGetQueryOptions = <TData = Awaited<ReturnType<typeof getSettingsApiV1SettingsGet>>, TError = HTTPValidationError>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSettingsApiV1SettingsGet>>, TError, TData>>, fetch?: RequestInit}
+export const getGetSettingsApiV1SettingsGetQueryOptions = <TData = Awaited<ReturnType<typeof getSettingsApiV1SettingsGet>>, TError = HTTPValidationError>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSettingsApiV1SettingsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetSettingsApiV1SettingsGetQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSettingsApiV1SettingsGet>>> = ({ signal }) => getSettingsApiV1SettingsGet({ signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSettingsApiV1SettingsGet>>> = ({ signal }) => getSettingsApiV1SettingsGet({ signal, ...requestOptions });
 
 
 
@@ -126,7 +123,7 @@ export function useGetSettingsApiV1SettingsGet<TData = Awaited<ReturnType<typeof
           TError,
           Awaited<ReturnType<typeof getSettingsApiV1SettingsGet>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetSettingsApiV1SettingsGet<TData = Awaited<ReturnType<typeof getSettingsApiV1SettingsGet>>, TError = HTTPValidationError>(
@@ -136,11 +133,11 @@ export function useGetSettingsApiV1SettingsGet<TData = Awaited<ReturnType<typeof
           TError,
           Awaited<ReturnType<typeof getSettingsApiV1SettingsGet>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetSettingsApiV1SettingsGet<TData = Awaited<ReturnType<typeof getSettingsApiV1SettingsGet>>, TError = HTTPValidationError>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSettingsApiV1SettingsGet>>, TError, TData>>, fetch?: RequestInit}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSettingsApiV1SettingsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -148,7 +145,7 @@ export function useGetSettingsApiV1SettingsGet<TData = Awaited<ReturnType<typeof
  */
 
 export function useGetSettingsApiV1SettingsGet<TData = Awaited<ReturnType<typeof getSettingsApiV1SettingsGet>>, TError = HTTPValidationError>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSettingsApiV1SettingsGet>>, TError, TData>>, fetch?: RequestInit}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSettingsApiV1SettingsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -195,7 +192,7 @@ export const getUpdateSettingApiV1SettingsKeyPutUrl = (key: SettingKey,) => {
 export const updateSettingApiV1SettingsKeyPut = async (key: SettingKey,
     settingUpdate: SettingUpdate, options?: RequestInit): Promise<updateSettingApiV1SettingsKeyPutResponse> => {
 
-  const res = await fetch(getUpdateSettingApiV1SettingsKeyPutUrl(key),
+  return customFetch<updateSettingApiV1SettingsKeyPutResponse>(getUpdateSettingApiV1SettingsKeyPutUrl(key),
   {
     ...options,
     method: 'PUT',
@@ -203,27 +200,21 @@ export const updateSettingApiV1SettingsKeyPut = async (key: SettingKey,
     body: JSON.stringify(
       settingUpdate,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: updateSettingApiV1SettingsKeyPutResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as updateSettingApiV1SettingsKeyPutResponse
-}
+);}
 
 
 
 
 export const getUpdateSettingApiV1SettingsKeyPutMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateSettingApiV1SettingsKeyPut>>, TError,{key: SettingKey;data: SettingUpdate}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateSettingApiV1SettingsKeyPut>>, TError,{key: SettingKey;data: SettingUpdate}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof updateSettingApiV1SettingsKeyPut>>, TError,{key: SettingKey;data: SettingUpdate}, TContext> => {
 
 const mutationKey = ['updateSettingApiV1SettingsKeyPut'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -231,7 +222,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateSettingApiV1SettingsKeyPut>>, {key: SettingKey;data: SettingUpdate}> = (props) => {
           const {key,data} = props ?? {};
 
-          return  updateSettingApiV1SettingsKeyPut(key,data,fetchOptions)
+          return  updateSettingApiV1SettingsKeyPut(key,data,requestOptions)
         }
 
 
@@ -249,7 +240,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Update Setting
  */
 export const useUpdateSettingApiV1SettingsKeyPut = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateSettingApiV1SettingsKeyPut>>, TError,{key: SettingKey;data: SettingUpdate}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateSettingApiV1SettingsKeyPut>>, TError,{key: SettingKey;data: SettingUpdate}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateSettingApiV1SettingsKeyPut>>,
         TError,
@@ -290,34 +281,28 @@ export const getDeleteSettingApiV1SettingsKeyDeleteUrl = (key: SettingKey,) => {
 
 export const deleteSettingApiV1SettingsKeyDelete = async (key: SettingKey, options?: RequestInit): Promise<deleteSettingApiV1SettingsKeyDeleteResponse> => {
 
-  const res = await fetch(getDeleteSettingApiV1SettingsKeyDeleteUrl(key),
+  return customFetch<deleteSettingApiV1SettingsKeyDeleteResponse>(getDeleteSettingApiV1SettingsKeyDeleteUrl(key),
   {
     ...options,
     method: 'DELETE'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: deleteSettingApiV1SettingsKeyDeleteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as deleteSettingApiV1SettingsKeyDeleteResponse
-}
+);}
 
 
 
 
 export const getDeleteSettingApiV1SettingsKeyDeleteMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteSettingApiV1SettingsKeyDelete>>, TError,{key: SettingKey}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteSettingApiV1SettingsKeyDelete>>, TError,{key: SettingKey}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteSettingApiV1SettingsKeyDelete>>, TError,{key: SettingKey}, TContext> => {
 
 const mutationKey = ['deleteSettingApiV1SettingsKeyDelete'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -325,7 +310,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteSettingApiV1SettingsKeyDelete>>, {key: SettingKey}> = (props) => {
           const {key} = props ?? {};
 
-          return  deleteSettingApiV1SettingsKeyDelete(key,fetchOptions)
+          return  deleteSettingApiV1SettingsKeyDelete(key,requestOptions)
         }
 
 
@@ -343,7 +328,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Delete Setting
  */
 export const useDeleteSettingApiV1SettingsKeyDelete = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteSettingApiV1SettingsKeyDelete>>, TError,{key: SettingKey}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteSettingApiV1SettingsKeyDelete>>, TError,{key: SettingKey}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteSettingApiV1SettingsKeyDelete>>,
         TError,
@@ -384,34 +369,28 @@ export const getResetSectionApiV1SettingsResetSectionPostUrl = (section: Section
 
 export const resetSectionApiV1SettingsResetSectionPost = async (section: SectionId, options?: RequestInit): Promise<resetSectionApiV1SettingsResetSectionPostResponse> => {
 
-  const res = await fetch(getResetSectionApiV1SettingsResetSectionPostUrl(section),
+  return customFetch<resetSectionApiV1SettingsResetSectionPostResponse>(getResetSectionApiV1SettingsResetSectionPostUrl(section),
   {
     ...options,
     method: 'POST'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: resetSectionApiV1SettingsResetSectionPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as resetSectionApiV1SettingsResetSectionPostResponse
-}
+);}
 
 
 
 
 export const getResetSectionApiV1SettingsResetSectionPostMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof resetSectionApiV1SettingsResetSectionPost>>, TError,{section: SectionId}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof resetSectionApiV1SettingsResetSectionPost>>, TError,{section: SectionId}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof resetSectionApiV1SettingsResetSectionPost>>, TError,{section: SectionId}, TContext> => {
 
 const mutationKey = ['resetSectionApiV1SettingsResetSectionPost'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -419,7 +398,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof resetSectionApiV1SettingsResetSectionPost>>, {section: SectionId}> = (props) => {
           const {section} = props ?? {};
 
-          return  resetSectionApiV1SettingsResetSectionPost(section,fetchOptions)
+          return  resetSectionApiV1SettingsResetSectionPost(section,requestOptions)
         }
 
 
@@ -437,7 +416,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Reset Section
  */
 export const useResetSectionApiV1SettingsResetSectionPost = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof resetSectionApiV1SettingsResetSectionPost>>, TError,{section: SectionId}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof resetSectionApiV1SettingsResetSectionPost>>, TError,{section: SectionId}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof resetSectionApiV1SettingsResetSectionPost>>,
         TError,

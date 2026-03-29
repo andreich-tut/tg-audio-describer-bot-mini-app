@@ -18,6 +18,10 @@ export default defineConfig({
         fetch: {
           includeHttpResponseReturnType: true,
         },
+        mutator: {
+          path: './src/api/mutator.ts',
+          name: 'customFetch',
+        },
         reactQuery: {
           useQuery: true,
           useMutation: true,

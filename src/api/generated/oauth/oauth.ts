@@ -31,7 +31,10 @@ import type {
   YandexOauthCallbackApiV1OauthYandexCallbackGetParams
 } from '../models';
 
+import { customFetch } from '../../mutator';
 
+
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 
@@ -67,20 +70,14 @@ export const getGetYandexOauthUrlApiV1OauthYandexUrlGetUrl = () => {
 
 export const getYandexOauthUrlApiV1OauthYandexUrlGet = async ( options?: RequestInit): Promise<getYandexOauthUrlApiV1OauthYandexUrlGetResponse> => {
 
-  const res = await fetch(getGetYandexOauthUrlApiV1OauthYandexUrlGetUrl(),
+  return customFetch<getYandexOauthUrlApiV1OauthYandexUrlGetResponse>(getGetYandexOauthUrlApiV1OauthYandexUrlGetUrl(),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getYandexOauthUrlApiV1OauthYandexUrlGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getYandexOauthUrlApiV1OauthYandexUrlGetResponse
-}
+);}
 
 
 
@@ -93,16 +90,16 @@ export const getGetYandexOauthUrlApiV1OauthYandexUrlGetQueryKey = () => {
     }
 
 
-export const getGetYandexOauthUrlApiV1OauthYandexUrlGetQueryOptions = <TData = Awaited<ReturnType<typeof getYandexOauthUrlApiV1OauthYandexUrlGet>>, TError = HTTPValidationError>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getYandexOauthUrlApiV1OauthYandexUrlGet>>, TError, TData>>, fetch?: RequestInit}
+export const getGetYandexOauthUrlApiV1OauthYandexUrlGetQueryOptions = <TData = Awaited<ReturnType<typeof getYandexOauthUrlApiV1OauthYandexUrlGet>>, TError = HTTPValidationError>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getYandexOauthUrlApiV1OauthYandexUrlGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetYandexOauthUrlApiV1OauthYandexUrlGetQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getYandexOauthUrlApiV1OauthYandexUrlGet>>> = ({ signal }) => getYandexOauthUrlApiV1OauthYandexUrlGet({ signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getYandexOauthUrlApiV1OauthYandexUrlGet>>> = ({ signal }) => getYandexOauthUrlApiV1OauthYandexUrlGet({ signal, ...requestOptions });
 
 
 
@@ -122,7 +119,7 @@ export function useGetYandexOauthUrlApiV1OauthYandexUrlGet<TData = Awaited<Retur
           TError,
           Awaited<ReturnType<typeof getYandexOauthUrlApiV1OauthYandexUrlGet>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetYandexOauthUrlApiV1OauthYandexUrlGet<TData = Awaited<ReturnType<typeof getYandexOauthUrlApiV1OauthYandexUrlGet>>, TError = HTTPValidationError>(
@@ -132,11 +129,11 @@ export function useGetYandexOauthUrlApiV1OauthYandexUrlGet<TData = Awaited<Retur
           TError,
           Awaited<ReturnType<typeof getYandexOauthUrlApiV1OauthYandexUrlGet>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetYandexOauthUrlApiV1OauthYandexUrlGet<TData = Awaited<ReturnType<typeof getYandexOauthUrlApiV1OauthYandexUrlGet>>, TError = HTTPValidationError>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getYandexOauthUrlApiV1OauthYandexUrlGet>>, TError, TData>>, fetch?: RequestInit}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getYandexOauthUrlApiV1OauthYandexUrlGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -144,7 +141,7 @@ export function useGetYandexOauthUrlApiV1OauthYandexUrlGet<TData = Awaited<Retur
  */
 
 export function useGetYandexOauthUrlApiV1OauthYandexUrlGet<TData = Awaited<ReturnType<typeof getYandexOauthUrlApiV1OauthYandexUrlGet>>, TError = HTTPValidationError>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getYandexOauthUrlApiV1OauthYandexUrlGet>>, TError, TData>>, fetch?: RequestInit}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getYandexOauthUrlApiV1OauthYandexUrlGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -191,20 +188,14 @@ export const getOauthEventsApiV1OauthEventsGetUrl = () => {
 
 export const oauthEventsApiV1OauthEventsGet = async ( options?: RequestInit): Promise<oauthEventsApiV1OauthEventsGetResponse> => {
 
-  const res = await fetch(getOauthEventsApiV1OauthEventsGetUrl(),
+  return customFetch<oauthEventsApiV1OauthEventsGetResponse>(getOauthEventsApiV1OauthEventsGetUrl(),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: oauthEventsApiV1OauthEventsGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as oauthEventsApiV1OauthEventsGetResponse
-}
+);}
 
 
 
@@ -217,16 +208,16 @@ export const getOauthEventsApiV1OauthEventsGetQueryKey = () => {
     }
 
 
-export const getOauthEventsApiV1OauthEventsGetQueryOptions = <TData = Awaited<ReturnType<typeof oauthEventsApiV1OauthEventsGet>>, TError = HTTPValidationError>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof oauthEventsApiV1OauthEventsGet>>, TError, TData>>, fetch?: RequestInit}
+export const getOauthEventsApiV1OauthEventsGetQueryOptions = <TData = Awaited<ReturnType<typeof oauthEventsApiV1OauthEventsGet>>, TError = HTTPValidationError>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof oauthEventsApiV1OauthEventsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getOauthEventsApiV1OauthEventsGetQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof oauthEventsApiV1OauthEventsGet>>> = ({ signal }) => oauthEventsApiV1OauthEventsGet({ signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof oauthEventsApiV1OauthEventsGet>>> = ({ signal }) => oauthEventsApiV1OauthEventsGet({ signal, ...requestOptions });
 
 
 
@@ -246,7 +237,7 @@ export function useOauthEventsApiV1OauthEventsGet<TData = Awaited<ReturnType<typ
           TError,
           Awaited<ReturnType<typeof oauthEventsApiV1OauthEventsGet>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useOauthEventsApiV1OauthEventsGet<TData = Awaited<ReturnType<typeof oauthEventsApiV1OauthEventsGet>>, TError = HTTPValidationError>(
@@ -256,11 +247,11 @@ export function useOauthEventsApiV1OauthEventsGet<TData = Awaited<ReturnType<typ
           TError,
           Awaited<ReturnType<typeof oauthEventsApiV1OauthEventsGet>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useOauthEventsApiV1OauthEventsGet<TData = Awaited<ReturnType<typeof oauthEventsApiV1OauthEventsGet>>, TError = HTTPValidationError>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof oauthEventsApiV1OauthEventsGet>>, TError, TData>>, fetch?: RequestInit}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof oauthEventsApiV1OauthEventsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -268,7 +259,7 @@ export function useOauthEventsApiV1OauthEventsGet<TData = Awaited<ReturnType<typ
  */
 
 export function useOauthEventsApiV1OauthEventsGet<TData = Awaited<ReturnType<typeof oauthEventsApiV1OauthEventsGet>>, TError = HTTPValidationError>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof oauthEventsApiV1OauthEventsGet>>, TError, TData>>, fetch?: RequestInit}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof oauthEventsApiV1OauthEventsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -322,20 +313,14 @@ export const getYandexOauthCallbackApiV1OauthYandexCallbackGetUrl = (params?: Ya
 
 export const yandexOauthCallbackApiV1OauthYandexCallbackGet = async (params?: YandexOauthCallbackApiV1OauthYandexCallbackGetParams, options?: RequestInit): Promise<yandexOauthCallbackApiV1OauthYandexCallbackGetResponse> => {
 
-  const res = await fetch(getYandexOauthCallbackApiV1OauthYandexCallbackGetUrl(params),
+  return customFetch<yandexOauthCallbackApiV1OauthYandexCallbackGetResponse>(getYandexOauthCallbackApiV1OauthYandexCallbackGetUrl(params),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: yandexOauthCallbackApiV1OauthYandexCallbackGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as yandexOauthCallbackApiV1OauthYandexCallbackGetResponse
-}
+);}
 
 
 
@@ -348,16 +333,16 @@ export const getYandexOauthCallbackApiV1OauthYandexCallbackGetQueryKey = (params
     }
 
 
-export const getYandexOauthCallbackApiV1OauthYandexCallbackGetQueryOptions = <TData = Awaited<ReturnType<typeof yandexOauthCallbackApiV1OauthYandexCallbackGet>>, TError = HTTPValidationError>(params?: YandexOauthCallbackApiV1OauthYandexCallbackGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof yandexOauthCallbackApiV1OauthYandexCallbackGet>>, TError, TData>>, fetch?: RequestInit}
+export const getYandexOauthCallbackApiV1OauthYandexCallbackGetQueryOptions = <TData = Awaited<ReturnType<typeof yandexOauthCallbackApiV1OauthYandexCallbackGet>>, TError = HTTPValidationError>(params?: YandexOauthCallbackApiV1OauthYandexCallbackGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof yandexOauthCallbackApiV1OauthYandexCallbackGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getYandexOauthCallbackApiV1OauthYandexCallbackGetQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof yandexOauthCallbackApiV1OauthYandexCallbackGet>>> = ({ signal }) => yandexOauthCallbackApiV1OauthYandexCallbackGet(params, { signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof yandexOauthCallbackApiV1OauthYandexCallbackGet>>> = ({ signal }) => yandexOauthCallbackApiV1OauthYandexCallbackGet(params, { signal, ...requestOptions });
 
 
 
@@ -377,7 +362,7 @@ export function useYandexOauthCallbackApiV1OauthYandexCallbackGet<TData = Awaite
           TError,
           Awaited<ReturnType<typeof yandexOauthCallbackApiV1OauthYandexCallbackGet>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useYandexOauthCallbackApiV1OauthYandexCallbackGet<TData = Awaited<ReturnType<typeof yandexOauthCallbackApiV1OauthYandexCallbackGet>>, TError = HTTPValidationError>(
@@ -387,11 +372,11 @@ export function useYandexOauthCallbackApiV1OauthYandexCallbackGet<TData = Awaite
           TError,
           Awaited<ReturnType<typeof yandexOauthCallbackApiV1OauthYandexCallbackGet>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useYandexOauthCallbackApiV1OauthYandexCallbackGet<TData = Awaited<ReturnType<typeof yandexOauthCallbackApiV1OauthYandexCallbackGet>>, TError = HTTPValidationError>(
- params?: YandexOauthCallbackApiV1OauthYandexCallbackGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof yandexOauthCallbackApiV1OauthYandexCallbackGet>>, TError, TData>>, fetch?: RequestInit}
+ params?: YandexOauthCallbackApiV1OauthYandexCallbackGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof yandexOauthCallbackApiV1OauthYandexCallbackGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -399,7 +384,7 @@ export function useYandexOauthCallbackApiV1OauthYandexCallbackGet<TData = Awaite
  */
 
 export function useYandexOauthCallbackApiV1OauthYandexCallbackGet<TData = Awaited<ReturnType<typeof yandexOauthCallbackApiV1OauthYandexCallbackGet>>, TError = HTTPValidationError>(
- params?: YandexOauthCallbackApiV1OauthYandexCallbackGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof yandexOauthCallbackApiV1OauthYandexCallbackGet>>, TError, TData>>, fetch?: RequestInit}
+ params?: YandexOauthCallbackApiV1OauthYandexCallbackGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof yandexOauthCallbackApiV1OauthYandexCallbackGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -445,34 +430,28 @@ export const getDisconnectYandexApiV1OauthYandexDeleteUrl = () => {
 
 export const disconnectYandexApiV1OauthYandexDelete = async ( options?: RequestInit): Promise<disconnectYandexApiV1OauthYandexDeleteResponse> => {
 
-  const res = await fetch(getDisconnectYandexApiV1OauthYandexDeleteUrl(),
+  return customFetch<disconnectYandexApiV1OauthYandexDeleteResponse>(getDisconnectYandexApiV1OauthYandexDeleteUrl(),
   {
     ...options,
     method: 'DELETE'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: disconnectYandexApiV1OauthYandexDeleteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as disconnectYandexApiV1OauthYandexDeleteResponse
-}
+);}
 
 
 
 
 export const getDisconnectYandexApiV1OauthYandexDeleteMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof disconnectYandexApiV1OauthYandexDelete>>, TError,void, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof disconnectYandexApiV1OauthYandexDelete>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof disconnectYandexApiV1OauthYandexDelete>>, TError,void, TContext> => {
 
 const mutationKey = ['disconnectYandexApiV1OauthYandexDelete'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -480,7 +459,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof disconnectYandexApiV1OauthYandexDelete>>, void> = () => {
 
 
-          return  disconnectYandexApiV1OauthYandexDelete(fetchOptions)
+          return  disconnectYandexApiV1OauthYandexDelete(requestOptions)
         }
 
 
@@ -498,7 +477,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Disconnect Yandex
  */
 export const useDisconnectYandexApiV1OauthYandexDelete = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof disconnectYandexApiV1OauthYandexDelete>>, TError,void, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof disconnectYandexApiV1OauthYandexDelete>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof disconnectYandexApiV1OauthYandexDelete>>,
         TError,
