@@ -24,13 +24,21 @@ export function LLMConfig({ onBack, onNavigate }: LLMConfigProps) {
   const { data: modelsData } = useListLlmModelsApiV1LlmModelsGet();
   const pingMutation = usePingLlmEndpointApiV1LlmPingPost();
   
-  // Extract models from the nested response structure using type guard
-  const models = isLLMModelsResponse(modelsData?.data) ? modelsData.data.models : [];
+  // Extract models from the response - customFetch returns parsed JSON directly
+  const models = isLLMModelsResponse(modelsData) ? modelsData.models : [];
+
+  // Get current model ID - customFetch returns parsed JSON directly
+  const currentModelId = typeof currentModelData === 'string'
+    ? currentModelData
+    : (currentModelData && typeof currentModelData === 'object' && 'model_id' in currentModelData)
+      ? (currentModelData as { model_id: string }).model_id
+      : undefined;
   
-  // Get current model ID - handle the response structure
-  const currentModelId = typeof currentModelData?.data === 'string' 
-    ? currentModelData.data 
-    : undefined;
+  // Log for debugging
+  console.log('[LLMConfig] modelsData:', modelsData);
+  console.log('[LLMConfig] extracted models:', models);
+  console.log('[LLMConfig] currentModelData:', currentModelData);
+  console.log('[LLMConfig] currentModelId:', currentModelId);
   
   // Find current model name from the list
   const currentModelName = currentModelId && models.length > 0

@@ -16,22 +16,29 @@ function isLLMModelsResponse(data: unknown): data is LLMModelsResponse {
 
 export function ModelSelection({ onBack }: ModelSelectionProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [showOnlyFree, setShowOnlyFree] = useState(false);
+  const [showOnlyFree, setShowOnlyFree] = useState(true);
 
   const { data: modelsData, isLoading: isLoadingModels } = useListLlmModelsApiV1LlmModelsGet();
   const { data: currentModelData } = useGetLlmModelApiV1LlmModelGet();
   const { selectModel, isLoading: isSelecting } = useModelSelection();
 
-  // Extract models from the nested response structure using type guard
+  // Extract models from the response - customFetch returns parsed JSON directly
   const models = useMemo(
-    () => (modelsData && isLLMModelsResponse(modelsData.data) ? modelsData.data.models : []),
+    () => (modelsData && isLLMModelsResponse(modelsData) ? modelsData.models : []),
     [modelsData]
   );
-  
-  // Get current model ID - handle the response structure
-  const currentModelId = typeof currentModelData?.data === 'string' 
-    ? currentModelData.data 
-    : undefined;
+
+  // Get current model ID - customFetch returns parsed JSON directly
+  const currentModelId = typeof currentModelData === 'string'
+    ? currentModelData
+    : (currentModelData && typeof currentModelData === 'object' && 'model_id' in currentModelData)
+      ? (currentModelData as { model_id: string }).model_id
+      : undefined;
+
+  // Log for debugging
+  console.log('[ModelSelection] modelsData:', modelsData);
+  console.log('[ModelSelection] extracted models:', models);
+  console.log('[ModelSelection] currentModelId:', currentModelId);
 
   const filteredModels = useMemo(() => {
     return models.filter((model) => {
