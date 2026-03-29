@@ -30,3 +30,4 @@ openapi.json
 *.njsproj
 *.sln
 *.sw?
+*.har

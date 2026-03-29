@@ -29,6 +29,30 @@ function AppContent() {
   const initData = tg?.initData || '';
   
   useOAuthSSE(initData);
+  
+  // Debug info (remove after testing)
+  const [showDebug, setShowDebug] = useState(true);
+  if (showDebug && import.meta.env.PROD) {
+    return (
+      <div className="min-h-screen bg-[#020617] text-white p-4">
+        <div className="mb-4 p-4 bg-slate-800 rounded">
+          <h2 className="text-lg font-bold mb-2">Debug Info</h2>
+          <div className="text-sm space-y-1">
+            <div>Telegram: {window.Telegram ? '✅' : '❌'}</div>
+            <div>WebApp: {tg ? '✅' : '❌'}</div>
+            <div>initData: {initData ? `✅ (${initData.length} chars)` : '❌ EMPTY'}</div>
+            <div>User: {tg?.initDataUnsafe?.user?.username || 'not logged in'}</div>
+          </div>
+          <button
+            onClick={() => setShowDebug(false)}
+            className="mt-3 px-3 py-1 bg-violet-600 rounded text-sm"
+          >
+            Dismiss
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const handleTabChange = (tab: Tab) => {
     setActiveTab(tab);
