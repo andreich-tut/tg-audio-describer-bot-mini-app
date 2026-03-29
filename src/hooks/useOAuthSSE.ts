@@ -1,5 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 
+const API_BASE = (import.meta.env.VITE_API_BASE as string | undefined) ?? ''
+
 export interface OAuthState {
   provider: string
   connected: boolean
@@ -16,9 +18,9 @@ export function useOAuthSSE(initData: string) {
 
   const fetchState = useCallback(async () => {
     try {
-      const response = await fetch('/api/v1/settings', {
+      const response = await fetch(`${API_BASE}/api/v1/settings`, {
         headers: {
-          Authorization: `tma ${initData}`,
+          'X-Telegram-Init-Data': initData,
         },
       })
       if (response.ok) {
@@ -37,7 +39,7 @@ export function useOAuthSSE(initData: string) {
   }, [initData])
 
   useEffect(() => {
-    const url = `/api/v1/oauth/events?auth=${encodeURIComponent(initData)}`
+    const url = `${API_BASE}/api/v1/oauth/events?auth=${encodeURIComponent(initData)}`
     let es: EventSource | null = null
 
     try {

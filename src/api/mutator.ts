@@ -1,5 +1,7 @@
 const API_BASE = (import.meta.env.VITE_API_BASE as string | undefined) ?? ''
 
+const isDev = import.meta.env.DEV
+
 export type RequestBody = Record<string, unknown> | FormData | null
 
 export const customFetch = async <T>(
@@ -15,6 +17,15 @@ export const customFetch = async <T>(
 
   const fullUrl = `${API_BASE}${url}`
 
+  if (isDev) {
+    console.log('[API] Request:', {
+      method: options.method || 'GET',
+      url: fullUrl,
+      hasInitData: !!initData,
+      initDataLength: initData.length,
+    })
+  }
+
   const res = await fetch(fullUrl, {
     ...options,
     headers: {
@@ -26,9 +37,20 @@ export const customFetch = async <T>(
       : options?.body,
   })
 
+  if (isDev) {
+    console.log('[API] Response:', {
+      status: res.status,
+      statusText: res.statusText,
+      url: res.url,
+    })
+  }
+
   if (!res.ok) {
-    await res.json().catch(() => ({}))
-    throw new Error(`API error ${res.status}`)
+    const errorData = await res.json().catch(() => ({}))
+    if (isDev) {
+      console.error('[API] Error:', errorData)
+    }
+    throw new Error(`API error ${res.status}: ${res.statusText}`)
   }
 
   const body = [204, 205, 304].includes(res.status)

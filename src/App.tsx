@@ -23,8 +23,11 @@ function AppContent() {
   const [activeTab, setActiveTab] = useState<Tab>('Mode');
   const { isLoading, error } = useSettings();
   const { selectedMode, setMode } = useModeSelection('chat');
+  
+  // Telegram WebApp integration
   const tg = window.Telegram?.WebApp;
   const initData = tg?.initData || '';
+  
   useOAuthSSE(initData);
 
   const handleTabChange = (tab: Tab) => {
@@ -32,7 +35,22 @@ function AppContent() {
   };
 
   if (isLoading) return <div className="p-10 text-center text-[#64748b]">Loading…</div>;
-  if (error) return <div className="p-10 text-center text-rose-400">Failed to load</div>;
+  if (error) {
+    return (
+      <div className="p-10 text-center">
+        <div className="text-rose-400 mb-4">Failed to load</div>
+        <div className="text-sm text-slate-500 mb-4">
+          Error: {error instanceof Error ? error.message : String(error)}
+        </div>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-violet-600 rounded text-sm"
+        >
+          Reload
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#020617] font-sans text-[#f8fafc] flex flex-col">
