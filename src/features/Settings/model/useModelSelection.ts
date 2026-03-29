@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTelegram } from '@/hooks/useTelegram';
 import { customFetch } from '@/api/mutator';
+import type { ModelSelectRequest } from '@/api/generated/models/modelSelectRequest';
 
 export function useModelSelection() {
   const queryClient = useQueryClient();
@@ -8,9 +9,10 @@ export function useModelSelection() {
 
   const mutation = useMutation({
     mutationFn: async (modelId: string) => {
+      const body: ModelSelectRequest = { model_id: modelId };
       return customFetch('/api/v1/llm/model', {
         method: 'PUT',
-        body: JSON.stringify({ model_id: modelId }),
+        body: body as unknown as RequestInit['body'],
       });
     },
     onSuccess: () => {

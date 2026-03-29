@@ -32,7 +32,7 @@ export const customFetch = async <T>(
       ...defaultHeaders,
       ...options?.headers,
     },
-    body: options?.body && !(options.body instanceof FormData)
+    body: options?.body && !(options.body instanceof FormData) && typeof options.body !== 'string'
       ? JSON.stringify(options.body)
       : options?.body,
   })
